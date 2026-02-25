@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: gym_postgres
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=gym_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data # Чтобы данные не стирались при перезапуск
