@@ -12,5 +12,7 @@ func main() {
 	pool := storage.NewDb(ctx, cfg)
 	defer pool.Close()
 
+	storage := storage.New(pool)
+
 	log.Println("Connected to Database!")
 }

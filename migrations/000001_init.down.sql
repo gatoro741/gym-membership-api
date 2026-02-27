@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS classes;
+DROP TABLE IF EXISTS user_memberships;
+DROP TABLE IF EXISTS membership_plans;
+DROP TABLE IF EXISTS users;

@@ -5,8 +5,8 @@ services:
     image: postgres:15-alpine
     container_name: gym_postgres
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=gatoro
+      - POSTGRES_PASSWORD=drimbul
       - POSTGRES_DB=gym_db
     ports:
       - "5433:5432"
