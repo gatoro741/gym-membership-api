@@ -2,6 +2,7 @@ package main
 
 import (
 	"GymMembership-api/internal/config"
+	"GymMembership-api/internal/service"
 	"GymMembership-api/internal/storage"
 	"context"
 	"log"
@@ -12,7 +13,8 @@ func main() {
 	pool := storage.NewDb(ctx, cfg)
 	defer pool.Close()
 
-	storage := storage.New(pool)
+	strg := storage.New(pool)
+	serv := service.New(strg)
 
 	log.Println("Connected to Database!")
 }
