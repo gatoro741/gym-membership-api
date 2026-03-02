@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-func (s *Storage) GetPlanById(ctx context.Context, id int64) (*models.MembershipPlan, error) {
+func (s *Storage) GetPlanById(ctx context.Context, id int) (*models.MembershipPlan, error) {
 	query := `SELECT id, name, price, duration_days, visits_limit,is_active , created_at FROM membership_plans WHERE id = $1`
 	plan := &models.MembershipPlan{}
 	err := s.pool.QueryRow(ctx, query, id).Scan(

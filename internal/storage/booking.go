@@ -5,13 +5,19 @@ import (
 	"context"
 )
 
-func (s *Storage) CreateBooking(ctx context.Context, booking *models.Booking) error {
-	query := `INSERT INTO bookings (user_id , class_id) VALUES ($1 , $2)`
-	_, err := s.pool.Exec(ctx, query,
-		booking.UserId,
-		booking.ClassId,
+func (s *Storage) CreateBooking(ctx context.Context, userId int64, classId int64) (*models.Booking, error) {
+	query := `INSERT INTO bookings (user_id , class_id) VALUES ($1 , $2)
+				RETURNING id, status, created_at`
+	booking := &models.Booking{
+		UserId:  userId,
+		ClassId: classId,
+	}
+	err := s.pool.QueryRow(ctx, query, userId, classId).Scan(
+		&booking.Id,
+		&booking.Status,
+		&booking.CreatedAt,
 	)
-	return err
+	return booking, err
 }
 
 func (s *Storage) GetBookingByUserId(ctx context.Context, userid int64) ([]*models.Booking, error) {
@@ -42,8 +48,8 @@ func (s *Storage) GetBookingByUserId(ctx context.Context, userid int64) ([]*mode
 	return bookings, err
 }
 
-func (s *Storage) DeleteBooking(ctx context.Context, id int64) error {
-	query := `DELETE FROM bookings WHERE id = $1`
-	_, err := s.pool.Exec(ctx, query, id)
+func (s *Storage) DeleteBooking(ctx context.Context, id int64, userId int64) error {
+	query := `DELETE FROM bookings WHERE id = $1 and user_id = $2`
+	_, err := s.pool.Exec(ctx, query, id, userId)
 	return err
 }

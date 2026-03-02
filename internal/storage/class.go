@@ -59,3 +59,9 @@ func (s *Storage) CreateClass(ctx context.Context, class *models.Class) error {
 	)
 	return err
 }
+
+func (s *Storage) IncrementOccupied(ctx context.Context, classId int64) error {
+	query := `UPDATE classes SET occupied = occupied + 1 WHERE id = $1`
+	_, err := s.pool.Exec(ctx, query, classId)
+	return err
+}
