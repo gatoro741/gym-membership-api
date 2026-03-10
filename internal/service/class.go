@@ -3,6 +3,7 @@ package service
 import (
 	"GymMembership-api/internal/models"
 	"context"
+	"fmt"
 	"log"
 )
 
@@ -10,7 +11,8 @@ func (s *Service) CreateClass(ctx context.Context, class *models.Class) error {
 	err := s.storage.CreateClass(ctx, class)
 	if err != nil {
 		log.Printf("CreateClass: failed to create class : %v", err)
-		return err
+
+		return fmt.Errorf("CreateClass: failed to create class : %w", err)
 	}
 	return nil
 }
