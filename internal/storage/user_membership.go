@@ -35,3 +35,9 @@ func (s *Storage) GetMembershipByUserId(ctx context.Context, userId int64) (*mod
 	)
 	return userMembership, err
 }
+
+func (s *Storage) DeactivateExpiredMemberships(ctx context.Context) error {
+	query := `UPDATE user_memberships SET is_active = false WHERE end_date < NOW() AND is_active = true`
+	_, err := s.pool.Exec(ctx, query)
+	return err
+}
