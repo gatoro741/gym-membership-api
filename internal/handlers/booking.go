@@ -3,6 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func (h *Handler) BookClass(w http.ResponseWriter, r *http.Request) {
@@ -54,20 +57,17 @@ func (h *Handler) CancelBooking(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusUnauthorized, "unauthorized")
 		return
 	}
-	var req BookingRequest
 
-	err := json.NewDecoder(r.Body).Decode(&req)
+	bookingId, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		writeError(w, http.StatusBadRequest, "invalid request body")
+		writeError(w, http.StatusBadRequest, "invalid booking id")
 		return
 	}
 
-	err = h.service.CancelBooking(r.Context(), req.BookingId, userId)
+	err = h.service.CancelBooking(r.Context(), bookingId, userId)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-
 	w.WriteHeader(http.StatusOK)
-
 }

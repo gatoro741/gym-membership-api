@@ -5,15 +5,16 @@ import (
 	"context"
 )
 
-func (s *Storage) CreateUser(ctx context.Context, user models.User) error {
-	query := `INSERT INTO users (name , email , password_hash , role) VALUES ($1 , $2 , $3 , $4)`
-	_, err := s.pool.Exec(ctx, query,
+func (s *Storage) CreateUser(ctx context.Context, user *models.User) error {
+	query := `INSERT INTO users (name, email, password_hash, role) 
+              VALUES ($1, $2, $3, $4) RETURNING id, created_at`
+
+	return s.pool.QueryRow(ctx, query,
 		user.Name,
 		user.Email,
 		user.PasswordHash,
 		user.Role,
-	)
-	return err
+	).Scan(&user.Id, &user.CreatedAt)
 }
 
 func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {

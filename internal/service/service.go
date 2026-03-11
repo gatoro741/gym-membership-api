@@ -6,7 +6,7 @@ import (
 )
 
 type Storage interface {
-	CreateUser(ctx context.Context, user models.User) error
+	CreateUser(ctx context.Context, user *models.User) error
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	GetPlanById(ctx context.Context, id int) (*models.MembershipPlan, error)
 	CreateUserMembershipPlan(ctx context.Context, userMembership models.UserMembership) error

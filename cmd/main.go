@@ -2,10 +2,13 @@ package main
 
 import (
 	"GymMembership-api/internal/config"
+	"GymMembership-api/internal/handlers"
+	"GymMembership-api/internal/router"
 	"GymMembership-api/internal/service"
 	"GymMembership-api/internal/storage"
 	"context"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -14,7 +17,11 @@ func main() {
 	defer pool.Close()
 
 	strg := storage.New(pool)
-	serv := service.New(strg)
+	svc := service.New(strg)
+	h := handlers.New(svc)
 
-	log.Println("Connected to Database!")
+	r := router.NewRouter(h)
+
+	log.Println("Server starting on 8080")
+	http.ListenAndServe(":8080", r)
 }

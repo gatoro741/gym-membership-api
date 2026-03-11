@@ -3,18 +3,19 @@ package service
 import (
 	"GymMembership-api/internal/models"
 	"context"
+	"errors"
 	"log"
 
 	"github.com/alexedwards/argon2id"
 )
 
-func (s *Service) Register(ctx context.Context, email string, password string, name string) (models.User, error) {
+func (s *Service) Register(ctx context.Context, email string, password string, name string) (*models.User, error) {
 
 	hash, err := argon2id.CreateHash(password, argon2id.DefaultParams)
 
 	if err != nil {
 		log.Printf("failed to hash password: %v", err)
-		return models.User{}, err
+		return &models.User{}, err
 	}
 	user := models.User{
 		Name:         name,
@@ -22,12 +23,12 @@ func (s *Service) Register(ctx context.Context, email string, password string, n
 		PasswordHash: hash,
 		Role:         "client",
 	}
-	err = s.storage.CreateUser(ctx, user)
+	err = s.storage.CreateUser(ctx, &user)
 	if err != nil {
 		log.Printf("failed to create user: %v", err)
-		return user, err
+		return &user, err
 	}
-	return user, err
+	return &user, err
 
 }
 
@@ -38,10 +39,10 @@ func (s *Service) Login(ctx context.Context, email string, password string) (str
 		return "", err
 	}
 	match, err := argon2id.ComparePasswordAndHash(password, user.PasswordHash)
-	if match {
-		return GenerateToken(user.Id, user.Role)
+	if !match {
+		return "", errors.New("invalid password")
 
 	}
-	return "", err
+	return GenerateToken(user.Id, user.Role)
 
 }

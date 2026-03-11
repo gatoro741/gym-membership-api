@@ -16,9 +16,11 @@ func (s *Service) BuyMembership(ctx context.Context, planId int, userId int64) e
 
 	endDate := time.Now().Add(time.Duration(plan.DurationDays) * 24 * time.Hour)
 	userMembership := models.UserMembership{
-		UserId:  userId,
-		PlanId:  planId,
-		EndDate: endDate,
+		UserId:    userId,
+		PlanId:    planId,
+		StartDate: time.Now(),
+		EndDate:   endDate,
+		IsActive:  true,
 	}
 
 	err = s.storage.CreateUserMembershipPlan(ctx, userMembership)

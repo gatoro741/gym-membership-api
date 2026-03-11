@@ -35,6 +35,5 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(TokenResponse{Token: token})
 }
