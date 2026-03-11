@@ -6,9 +6,19 @@ services:
     container_name: gym_postgres
     environment:
       - POSTGRES_USER=gatoro
-      - POSTGRES_PASSWORD=drimbul
+      - POSTGRES_PASSWORD=твой_пароль
       - POSTGRES_DB=gym_db
     ports:
       - "5433:5432"
     volumes:
-      - ./pg_data:/var/lib/postgresql/data # Чтобы данные не стирались при перезапуск
+      - ./pg_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: gym_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
